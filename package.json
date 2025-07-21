@@ -1,0 +1,38 @@
+{
+  "name": "cpk-analysis-tools",
+  "version": "2.0.0",
+  "description": "Professional CPK analysis tools for ATE and Accuracy testing data",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/cpk-tools.git"
+  },
+  "keywords": [
+    "cpk",
+    "statistics",
+    "quality-control",
+    "ate-testing",
+    "accuracy-analysis",
+    "process-capability",
+    "data-analysis",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "CPK Analysis Tools Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-username/cpk-tools/issues"
+  },
+  "homepage": "https://your-username.github.io/cpk-tools/",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
