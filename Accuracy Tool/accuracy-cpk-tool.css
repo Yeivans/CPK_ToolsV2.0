@@ -1,0 +1,550 @@
+:root {
+    --primary-color: #0071e3;
+    --secondary-color: #1d1d1f;
+    --success-color: #28CD41;
+    --danger-color: #FF3B30;
+    --warning-color: #FF9500;
+    --background-color: #fbfbfd;
+    --surface-color: #ffffff;
+    --border-color: #e5e5e7;
+    --shadow-light: 0 2px 12px rgba(0,0,0,0.05);
+    --shadow-medium: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-heavy: 0 8px 32px rgba(0,0,0,0.12);
+    --radius-small: 12px;
+    --radius-medium: 18px;
+    --radius-large: 24px;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+    background: var(--background-color);
+    color: var(--secondary-color);
+    min-height: 100vh;
+    width: 100vw;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+/* 主要布局响应式样式 */
+.main-full {
+    width: 100vw;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: calc(1rem + 0.5vw);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-x: auto;
+}
+
+.content-area {
+    min-width: max-content;
+    width: calc(90vw + 5rem);
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    padding: calc(2rem + 1vw) calc(1.5rem + 1vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(2rem + 0.5vw);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.data-panel {
+    width: calc(90vw + 10rem);
+    max-width: 100%;
+    overflow: auto;
+    padding: calc(1rem + 0.5vw);
+    border: 1px solid #e5e5e7;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin: 0 auto;
+}
+@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    .content-area {
+        background: rgba(255, 255, 255, 0.8);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+}
+.content-area:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+/* 标题响应式样式 */
+h1 {
+    text-align: center;
+    font-size: calc(1.8rem + 1vw);
+    margin: 0 0 calc(2rem + 1vw) 0;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #434344 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* 工具栏响应式样式 */
+.toolbar {
+    display: flex;
+    gap: calc(1rem + 0.5vw);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-width: 320px;
+    margin-bottom: calc(1.5rem + 0.5vw);
+}
+
+.toolbar > div {
+    display: flex;
+    align-items: center;
+}
+
+/* 自定义文件标签响应式样式 */
+.custom-file-label {
+    cursor: pointer;
+    font-size: calc(0.9rem + 0.2vw);
+    color: #1d1d1f;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+/* 按钮基础样式 - 使用视口单位 */
+.btn {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 980px;
+    padding: calc(0.6rem + 0.3vw) calc(1.2rem + 0.6vw);
+    font-size: calc(0.9rem + 0.2vw);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: #0077ED;
+    box-shadow: 0 6px 20px rgba(0,113,227,0.4);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn i {
+    margin-right: 0;
+}
+
+.btn.btn-secondary {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+}
+
+@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    .btn.btn-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+}
+
+.btn.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(0,113,227,0.3);
+}
+
+.btn.btn-success {
+    background: var(--success-color);
+}
+
+.btn.btn-success:hover {
+    background: #26BF3C;
+    box-shadow: 0 6px 20px rgba(40,205,65,0.4);
+}
+
+.btn[style*="background: #FF9500"], .btn[style*="background:#FF9500"] {
+    background: var(--warning-color) !important;
+}
+
+.btn[style*="background: #FF9500"]:hover, .btn[style*="background:#FF9500"]:hover {
+    background: #E6860A !important;
+    box-shadow: 0 6px 20px rgba(255,149,0,0.4);
+}
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(1rem + 0.5vw);
+    margin-bottom: 20px;
+}
+.data-panel {
+    width: calc(90vw + 10rem);
+    max-width: 100%;
+    overflow: auto;
+    padding: calc(1rem + 0.5vw);
+    border: 1px solid #e5e5e7;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin: 0 auto;
+}
+.data-panel table {
+    min-width: 100%;
+    width: max-content;
+}
+.toolbar {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-width: 320px;
+}
+.toolbar > div {
+    display: flex;
+    align-items: center;
+}
+.custom-file-label {
+    cursor: pointer;
+    font-size: calc(0.9rem + 0.2vw);
+    color: #1d1d1f;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.custom-file-label:hover {
+    color: #0071e3;
+}
+#accuracyCpkTable table {
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: white;
+    box-shadow: var(--shadow-light);
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#accuracyCpkTable td, #accuracyCpkTable th {
+    padding: calc(0.8rem + 0.2vw) calc(1rem + 0.3vw);
+    border: 1px solid var(--border-color);
+    font-size: calc(0.85rem + 0.15vw);
+    line-height: 1.5;
+    text-align: center;
+}
+
+#accuracyCpkTable th {
+    background: #F5F5F7 !important;
+    font-weight: 600;
+    color: var(--secondary-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#accuracyCpkTable tr:hover {
+    background: rgba(0,113,227,0.05);
+}
+
+#accuracyCpkTable td[style*="background:#eaf6ff"] {
+    background: #F5F5F7 !important;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+#folderFileList table {
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: white;
+    box-shadow: var(--shadow-light);
+    width: 100%;
+    margin-top: calc(1rem + 0.3vw);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#folderFileList td, #folderFileList th {
+    padding: calc(0.6rem + 0.2vw) calc(0.8rem + 0.3vw);
+    border: 1px solid var(--border-color);
+    font-size: calc(0.8rem + 0.15vw);
+    line-height: 1.4;
+    text-align: left;
+}
+
+#folderFileList th {
+    background: #F5F5F7;
+    font-weight: 600;
+    color: var(--secondary-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+#folderFileList tr:hover {
+    background: rgba(0,113,227,0.05);
+}
+
+/* 数据表格响应式样式 */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-small);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: white;
+    box-shadow: var(--shadow-light);
+}
+
+/* 响应式媒体查询 */
+@media (max-width: 1200px) {
+    .data-table {
+        font-size: calc(0.7rem + 0.1vw);
+    }
+    .header-cell, .data-cell {
+        padding: calc(0.5rem + 0.2vw) calc(0.6rem + 0.3vw);
+    }
+}
+
+@media (max-width: 800px) {
+    .data-table {
+        font-size: calc(0.6rem + 0.1vw);
+        min-width: 800px; /* 确保表格有最小宽度，可以横向滚动 */
+    }
+    .header-cell, .data-cell {
+        padding: 6px 8px;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .data-table {
+        font-size: 10px;
+    }
+    .header-cell, .data-cell {
+        padding: 4px 6px;
+    }
+}
+.header-cell {
+    border: 1px solid #e5e5e7;
+    padding: 12px 16px;
+    font-weight: 600;
+    background: #F5F5F7;
+    text-align: center;
+    color: #1d1d1f;
+}
+.data-cell {
+    border: 1px solid #e5e5e7;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+/* 右上角按钮组样式 - 使用视口单位实现真正的自适应 */
+.fixed-right-top {
+    position: fixed;
+    right: 1.5vw;
+    top: 1.5vh;
+    z-index: 101;
+    display: flex;
+    gap: 0.8vw;
+    align-items: center;
+}
+
+.help-icon {
+    font-size: calc(1.2rem + 0.5vw);
+    color: #0071e3;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.help-icon:hover {
+    color: #0077ED;
+}
+
+.lang-btn, .chat-toggle-btn {
+    padding: calc(0.4rem + 0.2vw) calc(0.8rem + 0.4vw);
+    font-size: calc(0.8rem + 0.2vw);
+    background: #f0f0f0;
+    color: #1d1d1f;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.lang-btn:hover, .chat-toggle-btn:hover {
+    background: #e8e8e8;
+}
+
+/* 返回主页按钮响应式样式 - 使用视口单位 */
+.back-home-btn {
+    position: fixed;
+    left: 1.5vw;
+    top: 1.5vh;
+    z-index: 101;
+}
+
+.back-home-btn .btn {
+    padding: calc(0.5rem + 0.2vw) calc(1rem + 0.4vw);
+    font-size: calc(0.9rem + 0.2vw);
+    white-space: nowrap;
+}
+
+/* AI聊天框样式优化 */
+#ai-chat-box {
+    position: fixed;
+    top: calc(1.5rem + 0.5vw);
+    right: calc(1.5rem + 0.5vw);
+    width: calc(340px + 2vw);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-medium);
+    box-shadow: var(--shadow-heavy);
+    padding: calc(1rem + 0.3vw);
+    display: none;
+    border: 1px solid var(--border-color);
+    z-index: 1000;
+}
+
+@supports ((-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))) {
+    #ai-chat-box {
+        background: rgba(255, 255, 255, 0.8);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+}
+
+#ai-chat-drag {
+    cursor: move;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: calc(0.5rem + 0.2vw);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: calc(0.9rem + 0.1vw);
+}
+
+#ai-chat-history {
+    height: calc(120px + 2vh);
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-small);
+    padding: calc(0.5rem + 0.2vw);
+    margin-bottom: calc(0.5rem + 0.2vw);
+    font-size: calc(0.85rem + 0.1vw);
+    background: var(--surface-color);
+}
+
+.ai-chat-input-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+#ai-chat-input {
+    flex: 1;
+    padding: calc(0.5rem + 0.2vw) calc(0.7rem + 0.2vw);
+    border: 1px solid #e5e5e7;
+    border-radius: 8px;
+    font-size: calc(0.8rem + 0.1vw);
+    outline: none;
+}
+
+#ai-chat-input:focus {
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0,113,227,0.15);
+}
+
+#ai-chat-send {
+    padding: calc(0.5rem + 0.2vw) calc(0.8rem + 0.3vw);
+    font-size: calc(0.8rem + 0.1vw);
+    white-space: nowrap;
+}
+
+/* 基础响应式设计 - 保留最关键的断点 */
+@media (max-width: 768px) {
+    .fixed-right-top {
+        right: 2vw;
+        top: 2vh;
+        gap: 1vw;
+        flex-wrap: wrap;
+    }
+    
+    .back-home-btn {
+        left: 2vw;
+        top: 2vh;
+    }
+    
+    #ai-chat-box {
+        right: 2vw;
+        top: calc(2vh + 4rem);
+        width: calc(90vw);
+        max-width: none;
+    }
+    
+    .help-icon {
+        font-size: calc(1rem + 0.5vw);
+    }
+    
+    .lang-btn, .chat-toggle-btn {
+        font-size: calc(0.7rem + 0.2vw);
+        padding: calc(0.3rem + 0.1vw) calc(0.6rem + 0.2vw);
+    }
+}
+
+@media (max-width: 480px) {
+    .fixed-right-top {
+        position: relative;
+        right: auto;
+        top: auto;
+        justify-content: center;
+        margin: 1rem auto;
+        width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+    
+    .back-home-btn {
+        position: relative;
+        left: auto;
+        top: auto;
+        margin: 1rem auto;
+        display: flex;
+        justify-content: center;
+    }
+    
+    #ai-chat-box {
+        position: relative;
+        right: auto;
+        top: auto;
+        width: calc(100% - 2rem);
+        margin: 1rem;
+    }
+}

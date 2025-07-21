@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>ATE CPK分析工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome 只引用一次 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- 你的样式文件 -->
+    <link rel="stylesheet" href="ate-cpk-tool.css">
+    <!-- 依赖库 - 修正路径 -->
+    <script src="../xlsx.full.min.js"></script>
+    <script src="../html2canvas.min.js"></script>
+    <!-- 你的脚本文件 -->
+    <script src="ate-cpk-tool.js" defer></script>
+</head>
+<body>
+    <div class="main-container">
+        <h1><i class="fa-solid fa-chart-column icon"></i>ATE CPK 分析工具</h1>
+        <div class="input-bar">
+            <!-- 上傳Excel按钮放在最前面 -->
+            <label class="custom-file-label" for="excelUpload">
+                <i class="fa-solid fa-file-excel icon" style="color:#217346"></i>上傳 Excel
+                <input type="file" id="excelUpload" accept=".xlsx, .xls">
+            </label>
+            <!-- 上傳ATE Report txt按钮 -->
+            <label class="custom-file-label" for="ateReportUpload">
+                <i class="fa-solid fa-file-text icon" style="color:#185abd"></i>上傳 ATE Report
+                <input type="file" id="ateReportUpload" accept=".txt">
+            </label>
+            <!-- CH1~CH10 -->
+            <input type="text" class="custom-input" placeholder="CH1">
+            <input type="text" class="custom-input" placeholder="CH2">
+            <input type="text" class="custom-input" placeholder="CH3">
+            <input type="text" class="custom-input" placeholder="CH4">
+            <input type="text" class="custom-input" placeholder="CH5">
+            <input type="text" class="custom-input" placeholder="CH6">
+            <input type="text" class="custom-input" placeholder="CH7">
+            <input type="text" class="custom-input" placeholder="CH8">
+            <input type="text" class="custom-input" placeholder="CH9">
+            <input type="text" class="custom-input" placeholder="CH10">
+            <button id="confirmBtn" class="cpk-btn confirm-btn">
+                <i class="fa-solid fa-check icon"></i>確認
+            </button>
+            <button id="reparseBtn" class="cpk-btn reparse-btn" style="display: none;">
+                <i class="fa-solid fa-refresh icon"></i>重新解析
+            </button>
+            <button id="executeCpkBtn" class="cpk-btn execute-btn">
+                <i class="fa-solid fa-gears icon"></i>執行 CPK
+            </button>
+        </div>
+        <!-- 導出按鈕放在下方 -->
+        <div class="button-bar">
+            <button id="exportCpkBtn" class="cpk-btn export-btn">
+                <i class="fa-solid fa-download icon"></i>導出CPK
+            </button>
+            <button id="exportImgBtn" class="cpk-btn export-img-btn">
+                <i class="fa-solid fa-image icon"></i>導出圖片
+            </button>
+        </div>
+        <div class="container">
+            <div class="preview-section">
+                <div id="tableContainer"></div>
+                <div id="pagination" class="pagination-bar"></div>
+            </div>
+        </div>
+    </div>
+    <div id="ai-chat-box">
+        <div id="ai-chat-drag">
+            <i class="fa-solid fa-robot"></i> AI詢問聊天
+        </div>
+        <div id="ai-chat-history"></div>
+        <div class="ai-chat-input-bar">
+            <input id="ai-chat-input" type="text" placeholder="請輸入您的問題...">
+            <button id="ai-chat-send" class="cpk-btn ai-send-btn">
+                <i class="fa-solid fa-paper-plane"></i> 發送
+            </button>
+        </div>
+    </div>
+    <div class="fixed-left-top">
+       <button onclick="window.location.href='../index.html'" class="cpk-btn back-btn">
+          <i class="fa-solid fa-house"></i> 返回主頁
+      </button>
+    </div>
+    <div class="fixed-right-top">
+        <i class="fa-solid fa-circle-question help-icon"
+           title="1.點擊導入Excel，導入Chromra ATE Data
+2.輸入Testlog對應每組訊號
+3.點擊'執行CPK'
+4.點擊'導出CPK'或'導出圖片'"></i>
+        <select id="langSelect" class="cpk-btn lang-btn">
+            <option value="zh-TW">繁體中文</option>
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+        </select>
+        <button id="toggleChatBtn" class="cpk-btn chat-toggle-btn">
+            <i class="fa-solid fa-comments"></i> 顯示AI聊天
+        </button>
+    </div>
+</body>
+</html>
