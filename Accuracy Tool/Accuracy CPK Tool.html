@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="accuracy-cpk-tool.css">
-    <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
       
 </head>
@@ -15,7 +14,7 @@
       <div class="content-area">
         <!-- 返回主页按钮 - 响应式位置 -->
         <div class="back-home-btn">
-            <a href="../index.html" class="btn btn-secondary">
+            <a href="../CPK index.html" class="btn btn-secondary">
                 <i class="fa-solid fa-arrow-left"></i> 返回主頁
             </a>
         </div>
@@ -239,8 +238,9 @@
                         }
                         
                         let lines = text.split(/\r?\n/);
-                        // 记录所有AC Input和Load Setup的内容及行号
+                        // 记录所有AC Input、DC Input和Load Setup的内容及行号
                         let acInputs = [];
+                        let dcInputs = [];
                         let loadSetups = [];
                         for (let i = 0; i < lines.length; i++) {
                             if (/^STEP\..*: AC Input/.test(lines[i])) {
@@ -249,10 +249,35 @@
                                     acInputs.push({idx: i, desc: desc});
                                 }
                             }
+                            if (/^STEP\..*: DC Input/.test(lines[i])) {
+                                if (lines[i+1] && /^Describe\s*:/.test(lines[i+1])) {
+                                    let desc = lines[i+1].replace(/^Describe\s*: /, '').trim();
+                                    dcInputs.push({idx: i, desc: desc});
+                                }
+                                // 也检查下一行是否直接包含DC值信息
+                                if (lines[i+2] && /DC\s*=/.test(lines[i+2])) {
+                                    let dcMatch = lines[i+2].match(/DC\s*=\s*([\d\.]+V?)/);
+                                    if (dcMatch) {
+                                        let existingDesc = '';
+                                        if (lines[i+1] && /^Describe\s*:/.test(lines[i+1])) {
+                                            existingDesc = lines[i+1].replace(/^Describe\s*: /, '').trim();
+                                        }
+                                        let finalDesc = existingDesc ? existingDesc : dcMatch[1];
+                                        dcInputs.push({idx: i, desc: finalDesc});
+                                    }
+                                }
+                            }
                             if (/^STEP\..*: Load Setup/.test(lines[i])) {
                                 let desc = '';
                                 if (lines[i+1] && /^Describe\s*:/.test(lines[i+1])) {
                                     desc = lines[i+1].replace(/^Describe\s*: /, '').trim();
+                                }
+                                // 检查下面几行是否有负载设置信息
+                                for (let j = i+1; j < Math.min(i+5, lines.length); j++) {
+                                    if (/12V:\s*[\d\.]+A/.test(lines[j])) {
+                                        desc = lines[j].trim();
+                                        break;
+                                    }
                                 }
                                 loadSetups.push({idx: i, desc: desc});
                             }
@@ -274,15 +299,23 @@
                                     break;
                                 }
                             }
-                            // 查找最近的AC Input和Load Setup（在当前Accuracy Test之前）
+                            // 查找最近的AC Input、DC Input和Load Setup（在当前Accuracy Test之前）
                             let testCondition = '';
                             let closestAcInput = '';
+                            let closestDcInput = '';
                             let closestLoad = '';
                             
                             // 找到最近的AC Input（在当前Accuracy Test之前的最后一个）
                             for (let a = 0; a < acInputs.length; a++) {
                                 if (acInputs[a].idx < blockStartIdxs[b]) {
                                     closestAcInput = acInputs[a].desc;
+                                }
+                            }
+                            
+                            // 找到最近的DC Input（在当前Accuracy Test之前的最后一个）
+                            for (let d = 0; d < dcInputs.length; d++) {
+                                if (dcInputs[d].idx < blockStartIdxs[b]) {
+                                    closestDcInput = dcInputs[d].desc;
                                 }
                             }
                             
@@ -293,19 +326,32 @@
                                 }
                             }
                             
-                            // 组合测试条件：优先使用 AC Input + Load Setup 的组合
-                            if (closestAcInput && closestLoad) {
-                                testCondition = closestAcInput + ' ' + closestLoad;
+                            // 组合测试条件：优先使用输入电压 + Load Setup 的组合
+                            let inputVoltage = closestDcInput || closestAcInput; // 优先DC Input，其次AC Input
+                            
+                            // 调试信息
+                            console.log('=== Test Condition Debug ===');
+                            console.log('Accuracy Test at line:', blockStartIdxs[b]);
+                            console.log('Closest AC Input:', closestAcInput);
+                            console.log('Closest DC Input:', closestDcInput);
+                            console.log('Closest Load Setup:', closestLoad);
+                            console.log('Final Input Voltage:', inputVoltage);
+                            
+                            if (inputVoltage && closestLoad) {
+                                testCondition = inputVoltage + ' ' + closestLoad;
                             } else if (closestLoad) {
                                 testCondition = closestLoad;
-                            } else if (closestAcInput) {
-                                testCondition = closestAcInput;
+                            } else if (inputVoltage) {
+                                testCondition = inputVoltage;
                             } else {
-                                // 如果没有找到AC Input和Load Setup，才使用Accuracy Test本身的Describe行
+                                // 如果没有找到输入电压和Load Setup，才使用Accuracy Test本身的Describe行
                                 if (blockStartIdxs[b] + 1 < lines.length && /^Describe\s*:/.test(lines[blockStartIdxs[b] + 1])) {
                                     testCondition = lines[blockStartIdxs[b] + 1].replace(/^Describe\s*:\s*/, '').trim();
                                 }
                             }
+                            
+                            console.log('Final Test Condition:', testCondition);
+                            console.log('=============================');
                             let accuracyData = {};
                             let foundParameters = [];
                             
@@ -351,6 +397,32 @@
                                         accuracyData[paramName + '_Spec'] = percentageStr;
                                         continue;
                                     }
+                                    
+                                    // 尝试匹配第三种格式: 参数名: 数值1,数值2 百分比% (无方括号)
+                                    // 格式如: Vin:  47.996,48.000          0.0%
+                                    let m3 = line.match(/^\s*([A-Za-z0-9]+)\s*:\s*([\d\.]+)\s*,\s*([\d\.]+)\s+([+-]?[\d\.]+%)/);
+                                    if (m3) {
+                                        let paramName = m3[1].trim();
+                                        let measuredValue = parseFloat(m3[2].trim());
+                                        let referenceValue = parseFloat(m3[3].trim());
+                                        let percentageStr = m3[4].trim(); // 如: 0.0% 或 -18.5%
+                                        
+                                        // 记录找到的参数名称
+                                        if (!foundParameters.includes(paramName)) {
+                                            foundParameters.push(paramName);
+                                        }
+                                        
+                                        accuracyData[paramName + '_M'] = isNaN(measuredValue) ? '' : measuredValue;
+                                        accuracyData[paramName + '_R'] = isNaN(referenceValue) ? '' : referenceValue;
+                                        
+                                        // 直接使用文件中的百分比值
+                                        accuracyData[paramName + '_Spec'] = percentageStr;
+                                        
+                                        // 设置一个默认的规格限值（可以根据实际需要调整）
+                                        accuracyData[paramName + '_SpecLimit'] = 0.05; // 默认5%规格限值
+                                        
+                                        continue;
+                                    }
                                 }
                                 
                                 if (m) {
@@ -389,6 +461,17 @@
                                         }
                                     } else {
                                         accuracyData[paramName + '_Spec'] = '';
+                                    }
+                                } else {
+                                    // 尝试匹配第四种格式: 只有单个数值的参数 (如 Ein: 16.000)
+                                    let m4 = line.match(/^\s*([A-Za-z0-9]+)\s*:\s*([\d\.]+)\s*$/);
+                                    if (m4) {
+                                        let paramName = m4[1].trim();
+                                        let value = parseFloat(m4[2].trim());
+                                        
+                                        // 记录找到的参数名称 (但这类参数通常不用于CPK计算)
+                                        console.log('发现单值参数:', paramName, value);
+                                        // 暂时不将单值参数加入CPK计算，因为没有对比值
                                     }
                                 }
                             }
